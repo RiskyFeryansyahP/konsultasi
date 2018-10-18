@@ -108,8 +108,10 @@ class UserRouter {
 
         user.save({})
         .then(data => {
+            // console.log("Status : " + data.status)
             mahasiswa.save({})
             .then(result => {
+                // console.log("id Mahaiswa : " + result._id)
                 const status = res.statusCode
                 res.status(200).json({
                     status,
@@ -212,6 +214,48 @@ class UserRouter {
         })
     }
 
+    /**
+     * 
+     * @param req Request to the server to access
+     * @param res Response from server 
+     * @param next Function to the next a middleware
+     * in this function we make a Login user for to access this apps
+     */
+
+    loginUser(req : Request, res : Response, next : NextFunction)
+    {
+        const username : String = req.body.username
+        const password : String = req.body.password
+        User.findOne({username})
+        .then(data => {
+            console.log(data.password)
+            const hash = data.password
+            bcrypt.compare(password, hash, (err, result) => {
+                if(result === true)
+                {
+                    const status = res.statusCode
+                    res.status(200).json({
+                        status,
+                        message : "Login Successfull"
+                    })
+                }
+                else
+                {
+                    res.json({
+                        message : "Sorry, we cant find your password!"
+                    })
+                }
+            })
+        })
+        .catch(err => {
+            const status = res.statusCode
+            res.status(401).json({
+                err,
+                message : "Sorry , we cant find that username!"
+            })
+        })
+    }
+
     routes()
     {
         this.router.get('/', this.getUsers)
@@ -219,6 +263,7 @@ class UserRouter {
         this.router.post('/', this.createNewUser)
         this.router.put('/:username', this.updateUser)
         this.router.delete('/:username', this.deleteUser)
+        this.router.post('/login', this.loginUser)
     }
 
 }
