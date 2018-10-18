@@ -5,7 +5,7 @@ const UserSchema = new Schema({
     _id : { type : Schema.Types.ObjectId },
     username : { type : String, required : true, unique : true },
     password : { type : String, required : true },
-    email :     { type : String, required : true, unique : true },
+    email :     { type : String, required : true},
     status : { type : Schema.Types.ObjectId, required : true, refPath: 'onStatus' },
     onStatus : { type : String, required : true, enum : ['Mahasiswa', 'Dosen'] }
 })
