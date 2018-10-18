@@ -6,6 +6,7 @@ const DosenSchema = new Schema({
     firstName : { type : String, required : true },
     lastName :  { type : String, required : true },
     email :     { type : String, required : true, unique : true },
+    code :      {type : String, required : true},
     mahasiswa : [
         { type : Schema.Types.ObjectId, ref : 'Mahasiswa' }
     ]
