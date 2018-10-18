@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt'
 // import Model
 import User from '../model/User'
 import Mahasiswa from '../model/Mahasiswa'
+import Dosen from '../model/Dosen'
 
 //  Membuat class User Router untuk mengatur Route User
 class UserRouter {
@@ -106,26 +107,55 @@ class UserRouter {
             college
         })
 
+        const dosen = new Dosen({
+            _id : id,
+            firstName,
+            lastName,
+            code : Math.floor(Math.random() * Math.floor(1000)),
+        })
+
         user.save({})
         .then(data => {
             // console.log("Status : " + data.status)
-            mahasiswa.save({})
-            .then(result => {
-                // console.log("id Mahaiswa : " + result._id)
-                const status = res.statusCode
-                res.status(200).json({
-                    status,
-                    data,
-                    result
+            if(data.onStatus == 'Mahasiswa')
+            {
+                mahasiswa.save({})
+                .then(result => {
+                    // console.log("id Mahaiswa : " + result._id)
+                    const status = res.statusCode
+                    res.status(200).json({
+                        status,
+                        data,
+                        result
+                    })
                 })
-            })
-            .catch(err => {
-                const status = res.statusCode
-                res.status(status).json({
-                    status,
-                    err
+                .catch(err => {
+                    const status = res.statusCode
+                    res.status(status).json({
+                        status,
+                        err
+                    })
                 })
-            })
+            }
+            else
+            {
+                dosen.save({})
+                .then(result => {
+                    const status = res.statusCode
+                    res.status(200).json({
+                        status,
+                        data,
+                        result
+                    })
+                })
+                .catch(err => {
+                    const status = res.statusCode
+                    res.status(status).json({
+                        status,
+                        err
+                    })
+                })
+            }
         })
         .catch(err => {
             const status = res.statusCode
@@ -228,16 +258,43 @@ class UserRouter {
         const password : String = req.body.password
         User.findOne({username})
         .then(data => {
-            console.log(data.password)
+            // console.log(data.password)
             const hash = data.password
             bcrypt.compare(password, hash, (err, result) => {
                 if(result === true)
                 {
-                    const status = res.statusCode
-                    res.status(200).json({
-                        status,
-                        message : "Login Successfull"
-                    })
+                    if(data.onStatus == 'Mahasiswa')
+                    {
+                        Mahasiswa.findOne({ _id : data.status })
+                        .then(result2 => {
+                            const status = res.statusCode
+                            res.status(200).json({
+                                status,
+                                result2
+                            })
+                        })
+                        .catch(err => {
+                            res.status(500).json({
+                                err
+                            })
+                        })
+                    }
+                    else
+                    {
+                        Dosen.findOne({_id : data.status})
+                        .then(result2 => {
+                            const status = res.statusCode
+                            res.status(200).json({
+                                status,
+                                result2
+                            })
+                        })
+                        .catch(err => {
+                            res.status(500).json({
+                                err
+                            })
+                        })
+                    }
                 }
                 else
                 {
