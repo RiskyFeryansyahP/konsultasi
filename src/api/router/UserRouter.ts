@@ -211,17 +211,58 @@ class UserRouter {
         User.findOne({username})
         .then(data => {
             const id = data.status
-            // then in here we deleted the user
-            User.deleteOne({username})
-            .then(result => {
-                // in here we deleted the mahasiswa
-                Mahasiswa.deleteOne({_id : id})
-                .then(results => {
-                    const status : Number = res.statusCode
-                    res.status(200).json({
+
+            if(data.onStatus == 'Mahasiswa')
+            {
+                // then in here we deleted the user
+                User.deleteOne({username})
+                .then(result => {
+                    // in here we deleted the mahasiswa
+                    Mahasiswa.deleteOne({_id : id})
+                    .then(results => {
+                        const status : Number = res.statusCode
+                        res.status(200).json({
+                            status,
+                            result,
+                            results
+                        })
+                    })
+                    .catch(err => {
+                        const status = res.statusCode
+                        res.status(status).json({
+                            status,
+                            err
+                        })
+                    })
+
+                })
+                .catch(err => {
+                    const status = res.statusCode
+                    res.status(status).json({
                         status,
-                        result,
-                        results
+                        err
+                    })
+                })
+            }
+            else
+            {
+                User.deleteOne({username})
+                .then(result => {
+                    // in here we deleted the Dosen
+                    Dosen.findOneAndDelete({_id : id})
+                    .then(data => {
+                        const status = res.statusCode
+                        res.status(200).json({
+                            status,
+                            data
+                        })
+                    })
+                    .catch(err => {
+                        const status = res.statusCode
+                        res.status(500).json({
+                            status,
+                            err
+                        })
                     })
                 })
                 .catch(err => {
@@ -231,16 +272,7 @@ class UserRouter {
                         err
                     })
                 })
-
-            })
-            .catch(err => {
-                const status = res.statusCode
-                res.status(status).json({
-                    status,
-                    err
-                })
-            })
-
+            }
         })
     }
 
