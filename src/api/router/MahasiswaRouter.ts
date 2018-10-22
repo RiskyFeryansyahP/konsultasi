@@ -1,9 +1,10 @@
 import {Request, Response, NextFunction, Router} from 'express'
+import { Schema, Types } from 'mongoose'
 
 //  import mongodb schema
 import Mahasiswa from '../model/Mahasiswa'
-import User from '../model/User'
-import Dosen from '../model/Dosen';
+import Dosen from '../model/Dosen'
+import Tugas from '../model/Tugas'
 
 class MahasiswaRouter {
     router : Router
@@ -26,7 +27,7 @@ class MahasiswaRouter {
 
     getMahasiswas(req : Request, res : Response, next : NextFunction)
     {
-        Mahasiswa.find({}).populate('dosen', 'firstName lastName')
+        Mahasiswa.find({}).populate('dosen', 'firstName lastName').populate('tugas')
         .then(data => {
             const status = res.statusCode
             res.status(200).json({
@@ -78,10 +79,51 @@ class MahasiswaRouter {
         })
     }
 
+    createTugasMahasiswa(req : Request, res : Response, next : NextFunction)
+    {
+        const judul : String = req.body.judul
+        const keterangan : String = req.body.keterangan
+        const id = req.body.id
+
+        const tugas = new Tugas({
+            _id : Types.ObjectId(),
+            judul,
+            keterangan
+        })
+
+        tugas.save({})
+        .then(data => {
+            Mahasiswa.findOneAndUpdate({_id : id}, {tugas : data._id})
+            .then(result => {
+                const status = res.statusCode
+                res.status(200).json({
+                    status,
+                    data,
+                    result
+                })
+            })
+            .catch(err => {
+                const status = res.statusCode
+                res.status(500).json({
+                    status,
+                    err
+                })
+            })
+        })
+        .catch(err => {
+            const status = res.statusCode
+            res.status(500).json({
+                status,
+                err
+            })
+        })
+    }
+
     routes()
     {
         this.router.get('/', this.getMahasiswas)
         this.router.put('/', this.selectDosenOnMahasiswa)
+        this.router.put('/createTugas', this.createTugasMahasiswa)
     }
 }
 
