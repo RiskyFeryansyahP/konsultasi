@@ -1,4 +1,14 @@
-import { model, Schema } from 'mongoose'
+import { model, Schema, Document } from 'mongoose'
+
+// Membuat interface schema untuk Mahasiswa
+export interface IMahasiswa extends Document {
+    _id : Schema.Types.ObjectId,
+    firstName : string,
+    lastName : string,
+    college : string,
+    dosen : Schema.Types.ObjectId,
+    tugas : Schema.Types.ObjectId
+}
 
 //  Membuat Model Schema untuk Mahasiswa
 const MahasiswaSchema = new Schema({
@@ -17,4 +27,4 @@ const MahasiswaSchema = new Schema({
 //     justOne : true
 // })
 
-export default model("Mahasiswa", MahasiswaSchema)
+export default model<IMahasiswa>("Mahasiswa", MahasiswaSchema)
