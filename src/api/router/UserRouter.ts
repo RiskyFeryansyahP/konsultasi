@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import * as mongoose from 'mongoose'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 
 // import Model
 import User from '../model/User'
@@ -286,8 +286,8 @@ class UserRouter {
 
     loginUser(req : Request, res : Response, next : NextFunction)
     {
-        const username : String = req.body.username
-        const password : String = req.body.password
+        const username : string = req.body.username
+        const password : string = req.body.password
         User.findOne({username})
         .then(data => {
             // console.log(data.password)
