@@ -16,6 +16,7 @@
 * ketik : npm install
 * lalu compile dulu typescript nya dengan menjalankan : npm run ts
 * Lalu jalankan servernya dengan : npm run server
+* jika saat menjalankan npm run server error coba jalankan dengan : ./node_modules/nodemon/bin/nodemonjs ./build/index/js
 
 
 #### Dibuat oleh Risky Feryansyah Pribadi
