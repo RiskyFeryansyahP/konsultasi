@@ -7,6 +7,10 @@ import * as cors from 'cors'
 
 // Import Router
 import User from './api/router/UserRouter'
+import Mahasiswa from './api/router/MahasiswaRouter'
+import Dosen from './api/router/DosenRouter'
+import Meet from './api/router/MeetRouter'
+import Tugas from './api/router/TugasRouter'
 
 class Server {
     // membuat variabel app untuk menampung sebuah data dari express
@@ -32,6 +36,10 @@ class Server {
     routes()
     {
         this.app.use('/api/v1/user/', User)
+        this.app.use('/api/v1/mahasiswa', Mahasiswa)
+        this.app.use('/api/v1/dosen', Dosen)
+        this.app.use('/api/v1/meet', Meet)
+        this.app.use('/api/v1/tugas', Tugas)
     }
 }
 
