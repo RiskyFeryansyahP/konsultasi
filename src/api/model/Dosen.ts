@@ -16,7 +16,9 @@ const DosenSchema = new Schema({
     firstName : { type : String, required : true },
     lastName :  { type : String, required : true },
     code :      {type : Number, required : true},
-    meet : { type : Schema.Types.ObjectId, ref : 'Meet' },
+    meet : [
+        { type : Schema.Types.ObjectId, ref : 'Meet'}
+    ],
     mahasiswa : [
         { type : Schema.Types.ObjectId, ref : 'Mahasiswa' }
     ]
