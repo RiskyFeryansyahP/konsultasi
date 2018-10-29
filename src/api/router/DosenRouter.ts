@@ -12,7 +12,9 @@ class DosenRouter {
 
     getDosens(req : Request, res : Response, next : NextFunction)
     {
-        Dosen.find({}).populate('meet')
+        Dosen.find({}).populate({path : 'meet', select : 'status jam_awal jam_akhir keterangan mahasiswa', 
+                       populate : { path : 'mahasiswa', select : 'firstName lastName' } })
+                       .populate('mahasiswa', 'firstName lastName college')
         .then(data => {
             const status = res.statusCode
             res.status(200).json({
@@ -36,6 +38,24 @@ class DosenRouter {
         if(jawaban == 'Accept')
         {
             Meet.findOneAndUpdate({_id : id}, {status : 'diterima'})
+            .then(data => {
+                const status = res.statusCode
+                res.status(200).json({
+                    status,
+                    data
+                })
+            })
+            .catch(err => {
+                const status = res.statusCode
+                res.status(500).json({
+                    status,
+                    err
+                })
+            })
+        }
+        else 
+        {
+            Meet.findOneAndUpdate({_id : id}, {status : 'ditolak'})
             .then(data => {
                 const status = res.statusCode
                 res.status(200).json({
