@@ -9,7 +9,8 @@ export interface ITugas extends mongoose.Document {
     bab2 : string,
     bab3 : string,
     bab4 : string,
-    bab5 : string
+    bab5 : string,
+    mahasiswa : mongoose.Schema.Types.ObjectId
 }
 
 // membuat model schema untuk Tugas
@@ -22,6 +23,7 @@ const TugasSchema : mongoose.Schema = new mongoose.Schema({
     bab3 : { type : String, default : '' },
     bab4 : { type : String, default : '' },
     bab5 : { type : String, default : '' },
+    mahasiswa : { type : mongoose.Schema.Types.ObjectId, ref : 'Mahasiswa' }
 })
 
 export default mongoose.model<ITugas>('Tugas', TugasSchema);
