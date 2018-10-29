@@ -55,28 +55,30 @@ class MahasiswaRouter {
     {
         const id = req.body.id
         const dosen = req.body.dosen
-        Dosen.findOne({code : dosen})
-        .then(data => {
-            Mahasiswa.findOneAndUpdate({_id : id}, {dosen : data._id})
-            .then(result => {
-                const status = res.statusCode
-                res.status(200).json({
-                    status,
-                    data,
-                    message : 'Successfully Added Dosen into Mahasiswa'
+            Dosen.findOneAndUpdate({code : dosen}, { $push : { mahasiswa : id } }, { new : true })
+            .then(data => {
+                Mahasiswa.findOneAndUpdate({_id : id}, {dosen : data._id})
+                .then(result => {
+                    const status = res.statusCode
+                    res.status(200).json({
+                        status,
+                        data,
+                        message : 'Successfully Added Dosen into Mahasiswa'
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        err
+                    })
                 })
             })
             .catch(err => {
+                const status = res.statusCode
                 res.status(500).json({
+                    status,
                     err
                 })
             })
-        })
-        .catch(err => {
-            res.status(500).json({
-                err
-            })
-        })
     }
 
     createTugasMahasiswa(req : Request, res : Response, next : NextFunction)
@@ -88,7 +90,8 @@ class MahasiswaRouter {
         const tugas = new Tugas({
             _id : Types.ObjectId(),
             judul,
-            keterangan
+            keterangan,
+            mahasiswa : id
         })
 
         tugas.save({})
